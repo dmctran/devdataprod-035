@@ -12,7 +12,7 @@ shinyUI(fluidPage(
       sliderInput("n", "Sample size (num averages):",
                   min = 1, max = 50, value = 40),           
       sliderInput("num_sim", "Number of simulations:",  
-                  min = 20, max = 5000, value = 100, step = 20),
+                  min = 20, max = 5000, value = 20, step = 20),
       submitButton("Submit")
     ),
     column(6, offset = 1,
