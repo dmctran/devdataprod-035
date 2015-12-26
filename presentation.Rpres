@@ -1,0 +1,177 @@
+<style>
+.reveal pre code {
+  font-size: smaller;
+  background-color: whitesmoke;
+}
+
+.reveal h3 {
+  color: darkblue;
+  font-weight: bold;
+  border-bottom: 1px solid #000;
+  padding-bottom: 0.4em;
+}
+
+.reveal li {
+    margin-bottom: .2em;
+}
+</style>
+
+Central Limit Theorem demonstration
+========================================================
+author: Dominic Tran
+date: 26 December 2015
+transition: rotate
+
+The app
+========================================================
+* Demonstrate [Central Limit Theorem](https://en.wikipedia.org/wiki/Central_limit_theorem)
+
+  "*...given certain conditions, the arithmetic mean of a sufficiently large number of iterates of independent random variables, each with a well-defined expected value and well-defined variance, will be approximately normally distributed, regardless of the underlying distribution.*"
+  
+* Underlying distribution used: [*Exponential distribution*](https://en.wikipedia.org/wiki/Exponential_distribution)
+
+* Accessed via *shinyapps.io* [https://dmctran.shinyapps.io/devdataprod-035](https://dmctran.shinyapps.io/devdataprod-035)
+
+
+App interface
+========================================================
+* Input
+
+  + ED's parameter **lambda** ($\lambda$)
+  + Number of samples (**n**) from the ED from which an average (mean) is taken
+  + Number of averages (**num_sim**) - for which distribution is checked for approximately normal
+
+* Output
+  + Distribution of samples of averages: mean, variance, and standard deviation - for both samples  and theoretical
+  + Plots: histogram of samples of averages, normal distribution using theoretical parameters, exponential distribution, Normal Q-Q
+
+
+A case - small num_sim
+========================================================
+```{r set_seed, echo=FALSE}
+set.seed(11)
+```
+
+```{r small_num_sim, echo=FALSE, fig.align="center"}
+lambda <- 0.2
+n <- 40
+num_sim <- 20
+c("lambda" = lambda, "n" = n, "num_sim" = num_sim)
+
+exp_mean <- 1/lambda
+exp_stdev <- 1/lambda
+exp_var <- exp_stdev ^ 2
+
+norm_mean <- exp_mean
+norm_var <- exp_var / n
+norm_stdev <- sqrt(norm_var)
+
+data1 = NULL
+for (i in 1 : num_sim) data1 = c(data1, mean(rexp(n, lambda)))
+    
+sample_mean <- mean(data1)
+sample_var <- var(data1)
+sample_stdev <- sd(data1)
+
+layout(matrix(c(1,1,2,3), 2, 2, byrow = TRUE),
+        widths=c(1,1), heights=c(5,4))
+
+main_1 <- paste("Distribution of the mean of", n, "exponentials (")
+main_params <- list(n = n, lambda = lambda)
+hist(data1, breaks = 21, probability = TRUE, 
+      main = bquote("Distribution of the mean of" ~ .(main_params$n) 
+                       ~ "exponentials (" ~ lambda == .(main_params$lambda) ~ ")"),
+      xlab = NULL)
+abline(v = norm_mean, lwd = 2, lty = 2, col = "blue")
+abline(v = sample_mean, lty = 2, col = "red")
+lines(norm_mean - norm_stdev, 0.02, col = "blue", type = "p", pch = 17)
+lines(norm_mean + norm_stdev, 0.02, col = "blue", type = "p", pch = 17)
+lines(sample_mean - sample_stdev, 0, col = "red", type = "p", pch = 16)
+lines(sample_mean + sample_stdev, 0, col = "red", type = "p", pch = 16)
+curve(dnorm(x, mean = norm_mean, sd = norm_stdev), col = "blue", lwd = 2, add = TRUE)
+legend("topright", bty = "n", 
+      legend = c("Normal distribution",
+                  "Theoretical mean", "Sample mean", 
+                  "1 theoretical stdev", "1 sample stdev"), 
+      col = c("blue", "blue", "red", "blue", "red"), 
+      lty = c(1, 2, 2, NA, NA),
+      lwd = c(2, 2, 1, NA, NA),
+      pch = c(NA, NA, NA, 17, 16))
+    
+# exponential
+curve(dexp(x, rate = lambda), col = "darkblue", lwd = 2, from = 0, to = 30,
+          main = bquote("Underlying Exponential distribution (" 
+                        ~ lambda == .(main_params$lambda) ~ ")"),
+          xlab = NULL, y = "Density")
+abline(v = exp_mean, lty = 2, col = "red")
+mean_label <- paste("Mean", round(sample_mean, 2))
+legend("right", bty = "n", legend = mean_label, col = "red", lty = 2)
+    
+# qq
+qqnorm(data1)
+qqline(data1, col = "darkblue", lwd = 2)
+
+```
+
+A case - large num_sim
+========================================================
+```{r large_num_sim, echo=FALSE, fig.align="center"}
+lambda <- 0.2
+n <- 40
+num_sim <- 1500
+c("lambda" = lambda, "n" = n, "num_sim" = num_sim)
+
+exp_mean <- 1/lambda
+exp_stdev <- 1/lambda
+exp_var <- exp_stdev ^ 2
+
+norm_mean <- exp_mean
+norm_var <- exp_var / n
+norm_stdev <- sqrt(norm_var)
+
+data2 = NULL
+for (i in 1 : num_sim) data2 = c(data2, mean(rexp(n, lambda)))
+    
+sample_mean <- mean(data2)
+sample_var <- var(data2)
+sample_stdev <- sd(data2)
+
+layout(matrix(c(1,1,2,3), 2, 2, byrow = TRUE),
+        widths=c(1,1), heights=c(5,4))
+
+main_1 <- paste("Distribution of the mean of", n, "exponentials (")
+main_params <- list(n = n, lambda = lambda)
+hist(data2, breaks = 21, probability = TRUE, 
+      main = bquote("Distribution of the mean of" ~ .(main_params$n) 
+                       ~ "exponentials (" ~ lambda == .(main_params$lambda) ~ ")"),
+      xlab = NULL)
+abline(v = norm_mean, lwd = 2, lty = 2, col = "blue")
+abline(v = sample_mean, lty = 2, col = "red")
+lines(norm_mean - norm_stdev, 0.02, col = "blue", type = "p", pch = 17)
+lines(norm_mean + norm_stdev, 0.02, col = "blue", type = "p", pch = 17)
+lines(sample_mean - sample_stdev, 0, col = "red", type = "p", pch = 16)
+lines(sample_mean + sample_stdev, 0, col = "red", type = "p", pch = 16)
+curve(dnorm(x, mean = norm_mean, sd = norm_stdev), col = "blue", lwd = 2, add = TRUE)
+legend("topright", bty = "n", 
+      legend = c("Normal distribution",
+                  "Theoretical mean", "Sample mean", 
+                  "1 theoretical stdev", "1 sample stdev"), 
+      col = c("blue", "blue", "red", "blue", "red"), 
+      lty = c(1, 2, 2, NA, NA),
+      lwd = c(2, 2, 1, NA, NA),
+      pch = c(NA, NA, NA, 17, 16))
+    
+# exponential
+curve(dexp(x, rate = lambda), col = "darkblue", lwd = 2, from = 0, to = 30,
+          main = bquote("Underlying Exponential distribution (" 
+                        ~ lambda == .(main_params$lambda) ~ ")"),
+          xlab = NULL, y = "Density")
+abline(v = exp_mean, lty = 2, col = "red")
+mean_label <- paste("Mean", round(sample_mean, 2))
+legend("right", bty = "n", legend = mean_label, col = "red", lty = 2)
+    
+# qq
+qqnorm(data2)
+qqline(data2, col = "darkblue", lwd = 2)
+
+```
