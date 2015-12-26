@@ -1,0 +1,53 @@
+---
+title: "Documentation for Central Limit Theorem demonstration"
+author: "Dominic Tran"
+output: html_document
+---
+
+# About
+This application demonstrates the Central Limit Theorem.
+
+The Central Limit Theorem ([CLT](https://en.wikipedia.org/wiki/Central_limit_theorem)) states that: "...*given certain conditions, the arithmetic mean of a sufficiently large number of iterates of independent random variables, each with a well-defined expected value and well-defined variance, will be approximately normally distributed, regardless of the underlying distribution.*"
+
+The underlying distribution used in this application is the [Exponential distribution](https://en.wikipedia.org/wiki/Exponential_distribution) (ED).
+
+# Usage
+Use the **lambda** slider to specify the lambda parameter of the ED.  Use the **Sample size (of an average)** slider to specify the number of samples from the ED to be used in calculating an average.  Use the **Number of simulations** slider to specify the number of averages to be taken.  Click the **Submit** button to send the sliders' value away for calculation.
+
+According to the CLT, as the *Number of simulations* increases to a sufficiently large value, the distribution of the averages will be approximately normal.  This can be seen in the **Normal Q-Q Plot**.  When *Number of simulations* value is small (eg. between 20 and 50), the distribution of the averages is approximately normal up to about 1 standard deviation (the blue line matches the dots).  As the *Number of simulations* value gets larger (eg. 750), the distribution of the averages is approximately normal up to about 2 standard deviations.  As the *Number of simulations* value gets past 3000, the distribution of the averages is approximately normal up to about 2.2 standard deviations.
+
+
+# Input
+### lambda
+The lambda parameter of the ED.
+
+* Initial value: 0.2
+* Minimum value: 0.1
+* Maximum value: 5
+* Slider increment step: 0.1
+
+### Sample size (of an average)
+The number of samples taken from the ED used for calculating an average.
+
+* Initial value: 40
+* Minimum value: 1
+* Maximum value: 50
+
+### Number of simulations
+The sample size (distribution) of the averages.
+
+* Initial value: 20
+* Minimum value: 20
+* Maximum value: 5000
+* Slider increment step: 5
+
+# Output
+The **Submitted values** section shows the values of input controls (or initial values when the application is first loaded).
+
+The **Distributions parameters** section summarises the mean, variance, and standard deviation of the ED, theoretical distribution, and distribution of the averages based on input values.
+
+The **Distribution of the means** graph shows a histogram of the averages, theoretical mean, mean of the distribution of averages, 1 theoretical standard deviation, 1 standard deviation of the distribution of average, and a normal distribution based on theoretical mean and theoretical standard deviation.
+
+The **Underlying Exponential distribution** graph shows the ED with lambda as specified by the *lambda* input control.
+
+The **Normal Q-Q plot** compares the distribution of averages against the normal distribution (with theoretical mean and theoretical standard deviation).
