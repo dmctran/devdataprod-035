@@ -12,7 +12,8 @@ shinyServer(function(input, output) {
     # print params    
     input_values <- data.frame(c(lambda, n, num_sim), 
                                row.names = c("Lambda:", 
-                                             "Number of simulations:", "Sample size:"))    
+                                             "Sample size (of an average):",
+                                             "Number of simulations:"))    
     colnames(input_values) <- ""
     output$input_values <- renderPrint({input_values})
     
@@ -22,7 +23,7 @@ shinyServer(function(input, output) {
     exp_var <- exp_stdev ^ 2
     exp <- c(mean = exp_mean, var = exp_var, sd = exp_stdev)
     
-    # normal distribution parameters
+    # theoretical properties of distribution of samples (of averages)
     norm_mean <- exp_mean
     norm_var <- exp_var / n
     norm_stdev <- sqrt(norm_var)
@@ -40,7 +41,7 @@ shinyServer(function(input, output) {
     
     # summary of values
     dist_values <- round(rbind("Exponential distribution" = exp, 
-                               "Theoretical Normal distribution" = theorical, 
+                               "Theoretical (distribution of averages)" = theorical, 
                                "Distribution of averages" = sample), 2)
     output$dist_values <- renderPrint({dist_values})
     
